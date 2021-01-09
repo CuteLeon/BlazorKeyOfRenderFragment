@@ -54,7 +54,7 @@
         if (!RenderFragments.Any()) return;
 
         int index = RenderFragments.Count() / 2;
-        this.logger.LogInformation($"Delete {RenderFragments.ElementAt(index)} Render Fragment");
+        this.logger.LogInformation($"Delete no.{index} Render Fragment");
         RenderFragments.RemoveAt(index);
 
         this.StateHasChanged();

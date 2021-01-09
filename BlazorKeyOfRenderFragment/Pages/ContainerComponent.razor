@@ -42,7 +42,7 @@
         if (!Items.Any()) return;
 
         int index = Items.Count() / 2;
-        this.logger.LogInformation($"Delete {Items.ElementAt(index)} item");
+        this.logger.LogInformation($"Delete number {Items.ElementAt(index)} item");
         Items.RemoveAt(index);
 
         this.StateHasChanged();
