@@ -1,0 +1,50 @@
+﻿@inject ILogger<ContainerComponent> logger;
+
+<div class="mx-2 my-4 p-3 rounded rounded-lg shadow border border-danger">
+    <h3>ContainerComponent</h3>
+    <button class="btn btn-block btn-primary" @onclick="ClickAddButton">Add Ten</button>
+    <button class="btn btn-block btn-warning" @onclick="ClickDeleteButton">Delete One</button>
+    <hr />
+
+    @foreach (var item in this.Items)
+    {
+        /* @Key could be duplicate in different containers, but never duplicate in the same one.
+           Type of @Key could be int string or others.
+        */
+        var key = $"Item_{item}";
+        <ItemComponent @key="key" Value="item"></ItemComponent>
+    }
+</div>
+
+@code {
+    private List<int> Items = new List<int>();
+    private int start = 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ClickAddButton();
+    }
+
+    private void ClickAddButton()
+    {
+        const int length = 10;
+        this.logger.LogInformation($"Add {length} more items");
+        Items.AddRange(Enumerable.Range(start, length));
+        start += length;
+
+        this.StateHasChanged();
+    }
+
+    private void ClickDeleteButton()
+    {
+        if (!Items.Any()) return;
+
+        int index = Items.Count() / 2;
+        this.logger.LogInformation($"Delete {Items.ElementAt(index)} item");
+        Items.RemoveAt(index);
+
+        this.StateHasChanged();
+    }
+}

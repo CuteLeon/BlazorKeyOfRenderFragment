@@ -1,0 +1,62 @@
+﻿@inject ILogger<RenderContainerComponent> logger;
+
+<div class="mx-2 my-4 p-3 rounded rounded-lg shadow border border-danger">
+    <h3>RenderContainerComponent</h3>
+    <button class="btn btn-block btn-primary" @onclick="ClickAddButton">Add Ten</button>
+    <button class="btn btn-block btn-warning" @onclick="ClickDeleteButton">Delete One</button>
+    <hr />
+
+    @foreach (var renderFragment in this.RenderFragments)
+    {
+        @renderFragment
+    }
+</div>
+
+@code {
+    private List<RenderFragment> RenderFragments = new List<RenderFragment>();
+    private Type ItemComponentType = typeof(ItemComponent);
+    private string PropertyOfItemComponent = nameof(ItemComponent.Value);
+    private int start = 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ClickAddButton();
+    }
+
+    private void ClickAddButton()
+    {
+        const int length = 10;
+        this.logger.LogInformation($"Add {length} more Render Fragments");
+        RenderFragments.AddRange(Enumerable.Range(start, length).Select(index =>
+        {
+            RenderFragment render = builder =>
+            {
+                var key = $"RenderFragment_{index}";
+                builder.OpenRegion(index);
+                // Have to render a component via generic function.
+                builder.OpenComponent(0, this.ItemComponentType);
+                builder.AddAttribute(1, PropertyOfItemComponent, index);
+                builder.SetKey(key);
+                builder.CloseComponent();
+                builder.CloseRegion();
+            };
+            return render;
+        }));
+        start += length;
+
+        this.StateHasChanged();
+    }
+
+    private void ClickDeleteButton()
+    {
+        if (!RenderFragments.Any()) return;
+
+        int index = RenderFragments.Count() / 2;
+        this.logger.LogInformation($"Delete {RenderFragments.ElementAt(index)} Render Fragment");
+        RenderFragments.RemoveAt(index);
+
+        this.StateHasChanged();
+    }
+}

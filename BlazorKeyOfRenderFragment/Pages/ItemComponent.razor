@@ -1,0 +1,20 @@
+﻿@inject ILogger<ItemComponent> logger;
+
+<button class="btn btn-danger m-2">@Value</button>
+
+@code {
+    [Parameter]
+    public int Value { get; set; }
+
+    private void ClickMe()
+    {
+        this.logger.LogInformation($"Click {this.Value}");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        this.logger.LogWarning($"After render {this.Value}");
+    }
+}
