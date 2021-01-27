@@ -34,13 +34,14 @@
             RenderFragment render = builder =>
             {
                 var key = $"RenderFragment_{index}";
-                builder.OpenRegion(index);
+                //builder.OpenRegion(100);
+                //builder.OpenRegion(index);
                 // Have to render a component via generic function.
                 builder.OpenComponent(0, this.ItemComponentType);
                 builder.AddAttribute(1, PropertyOfItemComponent, index);
                 builder.SetKey(key);
                 builder.CloseComponent();
-                builder.CloseRegion();
+                //builder.CloseRegion();
             };
             return render;
         }));
