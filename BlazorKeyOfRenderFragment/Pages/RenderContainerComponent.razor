@@ -48,8 +48,6 @@
             return (index, render);
         }));
         start += length;
-
-        this.StateHasChanged();
     }
 
     private void ClickDeleteButton()
@@ -59,7 +57,5 @@
         int index = RenderFragments.Count() / 2;
         this.logger.LogInformation($"Delete no.{index} Render Fragment");
         RenderFragments.RemoveAt(index);
-
-        this.StateHasChanged();
     }
 }
