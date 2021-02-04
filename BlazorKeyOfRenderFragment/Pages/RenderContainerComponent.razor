@@ -8,12 +8,17 @@
 
     @foreach (var renderFragment in this.RenderFragments)
     {
-        @renderFragment
+        // Have to render a component via generic function.
+        // Issue and Solution: https://github.com/dotnet/aspnetcore/issues/29176
+        // Modify to use <DynamicComponent> in .Net 6
+        <span @key="@renderFragment.Index">
+            @renderFragment.RenderFragment
+        </span>
     }
 </div>
 
 @code {
-    private List<RenderFragment> RenderFragments = new List<RenderFragment>();
+    private List<(int Index, RenderFragment RenderFragment)> RenderFragments = new List<(int, RenderFragment)>();
     private Type ItemComponentType = typeof(ItemComponent);
     private string PropertyOfItemComponent = nameof(ItemComponent.Value);
     private int start = 0;
@@ -34,16 +39,13 @@
             RenderFragment render = builder =>
             {
                 var key = $"RenderFragment_{index}";
-                //builder.OpenRegion(100);
-                //builder.OpenRegion(index);
-                // Have to render a component via generic function.
                 builder.OpenComponent(0, this.ItemComponentType);
                 builder.AddAttribute(1, PropertyOfItemComponent, index);
                 builder.SetKey(key);
                 builder.CloseComponent();
-                //builder.CloseRegion();
             };
-            return render;
+
+            return (index, render);
         }));
         start += length;
 
