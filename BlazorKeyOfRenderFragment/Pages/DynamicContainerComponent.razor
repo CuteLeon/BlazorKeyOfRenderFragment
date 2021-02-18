@@ -1,0 +1,50 @@
+﻿@inject ILogger<DynamicContainerComponent> logger;
+
+<div class="mx-2 my-4 p-3 rounded rounded-lg shadow border border-danger">
+    <h3>DynamicContainerComponent</h3>
+    <button class="btn btn-block btn-primary" @onclick="ClickAddButton">Add Ten</button>
+    <button class="btn btn-block btn-warning" @onclick="ClickDeleteButton">Delete One</button>
+    <hr />
+
+    @foreach (var index in this.Indexes)
+    {
+        // Modify to use <DynamicComponent> in .Net 6
+        <DynamicComponent @key="@index"
+                          Type="@ItemComponentType"
+                          Parameters="new Dictionary<string, object> {
+                                          { PropertyOfItemComponent, index },
+                                      }">
+        </DynamicComponent>
+    }
+</div>
+
+@code {
+    private List<int> Indexes = new List<int>();
+    private Type ItemComponentType = typeof(ItemComponent);
+    private string PropertyOfItemComponent = nameof(ItemComponent.Value);
+    private int start = 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ClickAddButton();
+    }
+
+    private void ClickAddButton()
+    {
+        const int length = 10;
+        this.logger.LogInformation($"Add {length} more index");
+        Indexes.AddRange(Enumerable.Range(start, length));
+        start += length;
+    }
+
+    private void ClickDeleteButton()
+    {
+        if (!Indexes.Any()) return;
+
+        int index = Indexes.Count() / 2;
+        this.logger.LogInformation($"Delete no.{index} index");
+        Indexes.RemoveAt(index);
+    }
+}
